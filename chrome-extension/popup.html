@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 400px;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      margin: 0;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .header p {
+      margin: 5px 0 0 0;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    
+    .analyze-btn {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
+    }
+    
+    .analyze-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .analyze-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .text-section {
+      margin-bottom: 15px;
+    }
+    
+    .text-section h3 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    .extracted-text {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 12px;
+      color: #fff;
+      max-height: 100px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+    }
+    
+    .text-input {
+      width: 100%;
+      min-height: 80px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 12px;
+      color: #fff;
+      font-family: inherit;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    
+    .text-input:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .text-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .highlight-info {
+      background: rgba(255, 255, 0, 0.2);
+      border: 1px solid rgba(255, 255, 0, 0.4);
+      border-radius: 6px;
+      padding: 8px;
+      font-size: 11px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    
+    .result {
+      display: none;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    .result.fake {
+      background: rgba(255, 59, 48, 0.2);
+      border: 2px solid rgba(255, 59, 48, 0.5);
+    }
+    
+    .result.real {
+      background: rgba(52, 199, 89, 0.2);
+      border: 2px solid rgba(52, 199, 89, 0.5);
+    }
+    
+    .result.loading {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .confidence {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 5px;
+    }
+    
+    .error {
+      background: rgba(255, 59, 48, 0.2);
+      border: 2px solid rgba(255, 59, 48, 0.5);
+      color: #ffebee;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      display: none;
+    }
+    
+    .status {
+      font-size: 11px;
+      text-align: center;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .control-btn {
+      flex: 1;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .control-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔍 Fake News Detector</h1>
+    <p>Analyze Indonesian news articles</p>
+  </div>
+  
+  <div class="controls">
+    <button id="extractBtn" class="control-btn">Extract Text</button>
+    <button id="clearBtn" class="control-btn">Clear</button>
+  </div>
+  
+  <div class="text-section">
+    <h3>📄 Extracted Text (Highlighted on page)</h3>
+    <div id="extractedText" class="extracted-text" style="display: none;"></div>
+    <div id="highlightInfo" class="highlight-info" style="display: none;">
+      🟡 Text highlighted on page - Edit below if needed
+    </div>
+  </div>
+  
+  <div class="text-section">
+    <h3>✏️ Text to Analyze</h3>
+    <textarea id="textInput" class="text-input" placeholder="Click 'Extract Text' to get article content, or paste your own text here..."></textarea>
+  </div>
+  
+  <button id="analyzeBtn" class="analyze-btn">
+    Analyze Text
+  </button>
+  
+  <div id="result" class="result">
+    <div id="resultText"></div>
+    <div id="confidence" class="confidence"></div>
+  </div>
+  
+  <div id="error" class="error">
+    <div id="errorText"></div>
+  </div>
+  
+  <div class="status">
+    Make sure the API server is running on localhost:5000
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 
