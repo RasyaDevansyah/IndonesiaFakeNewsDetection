@@ -1,7 +1,7 @@
 # Indonesia Fake News Detection Chrome Extension
 
 A Chrome extension that detects fake news in Indonesian articles using a trained machine learning model.
-![Screenshot 2025-06-30 064859](https://github.com/user-attachments/assets/ff94b00b-45c5-4a4f-8bef-1481cc73feff)
+![Screenshot 2025-06-30 064859](https://github.com/user-attachments/assets/5f359c1a-38d4-4e74-88db-709c02ba815d)
 
 
 ## Project Structure
